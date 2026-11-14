@@ -1,0 +1,30 @@
+# ==============================================================================
+# NISAR Mangrove Change Detection - Python Dependencies
+# ==============================================================================
+
+# NASA ASF Discovery & Ingestion
+asf_search>=7.0.0           # Official Python SDK for NASA Alaska Satellite Facility DAAC API
+
+# HDF5 & Scientific Array Computing
+h5py>=3.9.0                 # Dynamic HDF5 reading and inspection for NISAR products
+numpy>=1.24.0,<3.0.0        # Numerical array computing, decibel math (10*log10(gamma0))
+scipy>=1.10.0               # Speckle filtering (Lee filter) and spatial statistics
+
+# Geospatial Raster & Vector Processing
+rasterio>=1.3.8             # GeoTIFF raster I/O, georeferencing, reprojection
+rioxarray>=0.15.0           # Geospatial xarray extension for spatial subsetting
+xarray>=2023.5.0            # Multi-dimensional labeled arrays for temporal radar cubes
+geopandas>=0.14.0           # Vector analysis for Sundarbans reserve & Gosaba boundary
+shapely>=2.0.0              # Planar geometric operations (AOI polygon, bounding boxes)
+pyproj>=3.6.0               # Cartographic projections and coordinate transformations
+
+# Data Analysis & Time Series
+pandas>=2.0.0               # Granule metadata auditing, tidal and rainfall covariate tables
+
+# Exploratory Visualization & Notebook Mapping
+matplotlib>=3.7.0           # Backscatter distribution histograms and cross-plots
+folium>=0.15.0              # Interactive Leaflet maps inside Google Colab / Jupyter
+
+# Utilities
+requests>=2.31.0            # HTTP client for ancillary metadata and tide/weather queries
+tqdm>=4.66.0                # Progress meters for batch processing

@@ -1,0 +1,34 @@
+{
+  "target_granule": "NISAR_L2_PR_GCOV_032_019_D_077_2005_QPDH_A_20261001T124313_20261001T124348_P05023_N_F_J_001",
+  "target_url": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/NISAR_L2_PR_GCOV_032_019_D_077_2005_QPDH_A_20261001T124313_20261001T124348_P05023_N_F_J_001/NISAR_L2_PR_GCOV_032_019_D_077_2005_QPDH_A_20261001T124313_20261001T124348_P05023_N_F_J_001.h5",
+  "credential_availability": {
+    "has_token_in_env": false,
+    "has_user_pass_in_env": false,
+    "has_netrc_on_disk": false,
+    "credentials_configured": false
+  },
+  "urs_oauth_handshake_measured": {
+    "step1_data_endpoint_response": {
+      "http_status": 302,
+      "location": "https://urs.earthdata.nasa.gov/oauth/authorize",
+      "oauth_client_id": "qpa3q_b7OJ32gGjwA9DxHg",
+      "oauth_app_type": "401",
+      "redirect_uri": "https://nisar.asf.earthdatacloud.nasa.gov/login",
+      "latency_seconds": 0.997
+    },
+    "step2_urs_challenge_response": {
+      "http_status": 401,
+      "content_type": "text/html; charset=utf-8",
+      "content_length": 27,
+      "server": "nginx",
+      "www_authenticate_header": "Basic realm=\"Please enter your Earthdata Login credentials. If you do not have a Earthdata Login, create one at https://urs.earthdata.nasa.gov//users/new\"",
+      "strict_transport_security": "max-age=31536000"
+    }
+  },
+  "authentication_verdict": {
+    "test_status": "AUTHENTICATION_REQUIRED",
+    "measured_evidence": "ASF DAAC data endpoints enforce OAuth2 authentication via URS (app_type=401). Requests without valid session cookies or Bearer tokens are intercepted at the gateway with an HTTP 401 Basic Auth challenge. Neither unauthenticated byte streaming nor unauthenticated Range requests can access the underlying HDF5 binary payload.",
+    "prerequisite_for_live_stream_test": "Valid Earthdata Login credentials (EARTHDATA_TOKEN or EARTHDATA_USERNAME + EARTHDATA_PASSWORD in environment or .netrc).",
+    "test_harness_status": "READY. scripts/test_authenticated_access.py is fully implemented with earthaccess, fsspec block-caching, and h5py page-buffering, waiting for valid credentials to execute the live Range benchmark and dataset extraction."
+  }
+}

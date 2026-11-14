@@ -1,0 +1,82 @@
+{
+  "study_area": "Gosaba Mangrove Complex, Sundarbans Delta, West Bengal",
+  "geographic_bounds_epsg_4326": {
+    "min_longitude_deg": 88.7,
+    "max_longitude_deg": 89.0,
+    "min_latitude_deg": 21.8,
+    "max_latitude_deg": 22.1,
+    "center_longitude_deg": 88.85,
+    "center_latitude_deg": 21.95,
+    "delta_longitude_deg": 0.3,
+    "delta_latitude_deg": 0.3
+  },
+  "projected_bounds_epsg_32645_utm45n": {
+    "crs_name": "WGS 84 / UTM zone 45N",
+    "epsg_code": 32645,
+    "southwest_corner_m": {
+      "x_easting": 675739.22,
+      "y_northing": 2411658.44
+    },
+    "southeast_corner_m": {
+      "x_easting": 706760.52,
+      "y_northing": 2412030.54
+    },
+    "northwest_corner_m": {
+      "x_easting": 675370.72,
+      "y_northing": 2444874.63
+    },
+    "northeast_corner_m": {
+      "x_easting": 706326.89,
+      "y_northing": 2445250.82
+    },
+    "bounding_box_m": {
+      "min_x_easting": 675370.72,
+      "max_x_easting": 706760.52,
+      "min_y_northing": 2411658.44,
+      "max_y_northing": 2445250.82,
+      "delta_x_easting_m": 31389.8,
+      "delta_y_northing_m": 33592.38,
+      "width_km": 31.39,
+      "height_km": 33.59,
+      "total_area_sq_km": 1054.44
+    }
+  },
+  "grid_mapping_mathematics": {
+    "coordinate_to_index_formula": {
+      "column_index_j": "floor((X_easting - xCoordinates[0]) / xCoordinateSpacing)",
+      "row_index_i": "floor((yCoordinates[0] - Y_northing) / abs(yCoordinateSpacing))",
+      "notes": "yCoordinates array in NISAR GCOV is ordered North-to-South (monotonically decreasing); hence row index 0 corresponds to max Northing."
+    },
+    "python_h5py_slice_syntax": "subset_array = h5_file['/science/LSAR/GCOV/grids/frequencyA/HHHH'][row_start:row_end, col_start:col_end]"
+  },
+  "resolution_configurations": {
+    "native_10m": {
+      "pixel_spacing_x_m": 10.0,
+      "pixel_spacing_y_m": -10.0,
+      "subset_columns": 3139,
+      "subset_rows": 3359,
+      "total_pixels_per_layer": 10543901,
+      "uncompressed_float32_single_band_mb": 40.22,
+      "uncompressed_float32_dual_pol_stack_mb": 80.44,
+      "uncompressed_10_band_quad_pol_stack_mb": 402.22,
+      "compression_savings_vs_full_scene": "95.6% reduction in RAM and storage requirement"
+    },
+    "multi_looked_20m": {
+      "pixel_spacing_x_m": 20.0,
+      "pixel_spacing_y_m": -20.0,
+      "subset_columns": 1569,
+      "subset_rows": 1680,
+      "total_pixels_per_layer": 2635920,
+      "uncompressed_float32_single_band_mb": 10.06,
+      "uncompressed_float32_dual_pol_stack_mb": 20.11,
+      "uncompressed_10_band_quad_pol_stack_mb": 100.55,
+      "compression_savings_vs_full_scene": "98.9% reduction in RAM and storage requirement"
+    }
+  },
+  "cross_frequency_resampling_plan": {
+    "master_grid": "WGS 84 / UTM zone 45N at standard 20m x 20m grid posting",
+    "l_band_treatment": "Native 10m or 20m GCOV power extracted via row/column slicing, then reprojected/resampled to master grid using area-weighted multi-look averaging",
+    "s_band_treatment": "S-SAR GCOV power layers resampled to the identical master grid using bilinear interpolation on linear power",
+    "radiometric_preservation": "Never use nearest-neighbor on backscatter power (avoids pixel-drop artifacts); never use high-order spline (avoids negative power overshoots); discrete masks resampled with nearest-neighbor"
+  }
+}

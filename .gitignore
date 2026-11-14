@@ -1,0 +1,106 @@
+# ==============================================================================
+# NISAR Mangrove Change Detection - Git Ignore Policy
+# ==============================================================================
+
+# Raw Satellite & Radar Products (Never commit multi-GB HDF5/GeoTIFFs/KMZ)
+*.h5
+*.hdf5
+*.he5
+*.nc
+*.nc4
+*.kmz
+*.kml
+*.tar
+*.tar.gz
+*.zip
+data/raw/*
+!data/raw/.gitkeep
+
+# Large Intermediate & Processed Raster Datasets
+*.tif
+*.tiff
+*.cog
+*.vrt
+*.img
+data/intermediate/*
+!data/intermediate/.gitkeep
+
+# Processed Rasters vs Processed Metadata
+data/processed/*.tif
+data/processed/*.tiff
+data/processed/*.cog
+data/processed/*.h5
+!data/processed/*.csv
+!data/processed/*.json
+!data/processed/.gitkeep
+
+# GeoJSON Spatial Definitions & Web Metadata
+!data/aoi/*.geojson
+!web/data/*.json
+!web/data/*.geojson
+!web/data/rasters/.gitkeep
+
+# Credentials, Secrets & Earthdata Authentication (STRICT PRIVACY)
+.env
+.env.*
+*.env
+.netrc
+_netrc
+*credential*
+*token*
+*.pem
+*.key
+nasa_credentials.json
+earthdata_config.json
+
+# Python & Build Artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter & Google Colab Checkpoints
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# IDEs & System Metadata
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Temporary Scratch Files & Diagnostic Scripts
+*.log
+scratch/
+tmp/
+temp/
+scripts/inspect_remote.py

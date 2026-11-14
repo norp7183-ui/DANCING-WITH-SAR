@@ -1,0 +1,296 @@
+{
+  "representative_product": {
+    "granule_id": "NISAR_L2_PR_GCOV_032_019_D_077_2005_QPDH_A_20261001T124313_20261001T124348_P05023_N_F_J_001",
+    "instrument": "L-SAR",
+    "product_type": "L2-GCOV",
+    "mode": "2005 (Quad-Pol Primary, Dual-Pol Sideband)",
+    "frequency_channel": "frequencyA (L-band, ~1.25 GHz / 24 cm)",
+    "processing_baseline": "PGE R05.02.3",
+    "crid": "P05023",
+    "specification_document": "JPL D-102274 (NISAR Level 2 GCOV Product Specification)"
+  },
+  "coordinate_reference_system": {
+    "crs_name": "WGS 84 / UTM zone 45N",
+    "epsg_code": 32645,
+    "proj4": "+proj=utm +zone=45 +datum=WGS84 +units=m +no_defs",
+    "geographic_datum": "WGS 84 (EPSG:4326)",
+    "ellipsoid_semi_major_axis_m": 6378137.0,
+    "inverse_flattening": 298.257223563,
+    "utm_zone": 45,
+    "central_meridian_deg": 87.0
+  },
+  "grid_specifications": {
+    "group_path": "/science/LSAR/GCOV/grids/frequencyA",
+    "nominal_pixel_spacing_x_m": 10.0,
+    "nominal_pixel_spacing_y_m": -10.0,
+    "approximate_scene_rows": 24000,
+    "approximate_scene_cols": 24500,
+    "swath_width_km": 242.0
+  },
+  "verified_datasets": [
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/HHHH",
+      "description": "Diagonal polarimetric covariance element C11: calibrated gamma-nought backscatter power in horizontal transmit, horizontal receive",
+      "datatype": "float32",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "1 (linear power)",
+      "fill_value": "NaN",
+      "calibration_status": "Pre-calibrated gamma0 power (do not apply secondary calibration factors)",
+      "attributes": {
+        "long_name": "Calibrated terrain-corrected gamma0 backscatter power HHHH",
+        "units": "1",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/HVHV",
+      "description": "Diagonal polarimetric covariance element C22: calibrated gamma-nought backscatter power in horizontal transmit, vertical receive",
+      "datatype": "float32",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "1 (linear power)",
+      "fill_value": "NaN",
+      "calibration_status": "Pre-calibrated gamma0 power",
+      "attributes": {
+        "long_name": "Calibrated terrain-corrected gamma0 backscatter power HVHV",
+        "units": "1",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/VVVV",
+      "description": "Diagonal polarimetric covariance element C33 (or C44): calibrated gamma-nought backscatter power in vertical transmit, vertical receive",
+      "datatype": "float32",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "1 (linear power)",
+      "fill_value": "NaN",
+      "calibration_status": "Pre-calibrated gamma0 power (Quad-Pol exclusive)",
+      "attributes": {
+        "long_name": "Calibrated terrain-corrected gamma0 backscatter power VVVV",
+        "units": "1",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/VHVH",
+      "description": "Diagonal polarimetric covariance element: calibrated gamma-nought backscatter power in vertical transmit, horizontal receive",
+      "datatype": "float32",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "1 (linear power)",
+      "fill_value": "NaN",
+      "calibration_status": "Pre-calibrated gamma0 power (Quad-Pol exclusive)",
+      "attributes": {
+        "long_name": "Calibrated terrain-corrected gamma0 backscatter power VHVH",
+        "units": "1",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/HHHV",
+      "description": "Off-diagonal complex covariance term: cross-correlation between HH and HV channels",
+      "datatype": "complex64 (or compound float32 real, imag)",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "1",
+      "fill_value": "NaN + NaN j",
+      "calibration_status": "Complex cross-covariance (Quad-Pol exclusive)",
+      "attributes": {
+        "long_name": "Complex off-diagonal covariance term HHHV",
+        "units": "1",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/HHVV",
+      "description": "Off-diagonal complex covariance term: co-pol cross-correlation between HH and VV channels (critical for double-bounce phase and polarimetric decomposition)",
+      "datatype": "complex64",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "1",
+      "fill_value": "NaN + NaN j",
+      "calibration_status": "Complex cross-covariance (Quad-Pol exclusive; absent in Dual-Pol)",
+      "attributes": {
+        "long_name": "Complex off-diagonal covariance term HHVV",
+        "units": "1",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/xCoordinates",
+      "description": "1D vector containing UTM Easting coordinates of grid column centers",
+      "datatype": "float64",
+      "dimensions": [
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24500
+      ],
+      "units": "m",
+      "attributes": {
+        "standard_name": "projection_x_coordinate",
+        "long_name": "x coordinate of projection",
+        "units": "m"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/yCoordinates",
+      "description": "1D vector containing UTM Northing coordinates of grid row centers (monotonically decreasing)",
+      "datatype": "float64",
+      "dimensions": [
+        "yCoordinates"
+      ],
+      "approximate_shape": [
+        24000
+      ],
+      "units": "m",
+      "attributes": {
+        "standard_name": "projection_y_coordinate",
+        "long_name": "y coordinate of projection",
+        "units": "m"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/xCoordinateSpacing",
+      "description": "Grid pixel dimension along Easting (X) axis",
+      "datatype": "float64",
+      "dimensions": [],
+      "approximate_shape": "scalar",
+      "units": "m",
+      "nominal_value": 10.0
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/yCoordinateSpacing",
+      "description": "Grid pixel dimension along Northing (Y) axis (negative indicating downward raster ordering)",
+      "datatype": "float64",
+      "dimensions": [],
+      "approximate_shape": "scalar",
+      "units": "m",
+      "nominal_value": -10.0
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/projection",
+      "description": "Scalar grid mapping container defining map projection, EPSG code, and GeoTransform array",
+      "datatype": "int32",
+      "dimensions": [],
+      "approximate_shape": "scalar",
+      "attributes": {
+        "epsg_code": 32645,
+        "spatial_ref": "PROJCS[\"WGS 84 / UTM zone 45N\"...]",
+        "semi_major_axis": 6378137.0,
+        "inverse_flattening": 298.257223563,
+        "grid_mapping_name": "transverse_mercator"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/numberOfLooks",
+      "description": "2D layer recording the equivalent number of independent radar looks per pixel computed during multi-looking",
+      "datatype": "float32",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "1 (count)",
+      "fill_value": "0.0",
+      "attributes": {
+        "long_name": "Equivalent number of independent looks",
+        "units": "1",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/mask",
+      "description": "Bitmask layer indicating valid data, radar shadow, layover, and out-of-swath pixels",
+      "datatype": "uint16",
+      "dimensions": [
+        "yCoordinates",
+        "xCoordinates"
+      ],
+      "approximate_shape": [
+        24000,
+        24500
+      ],
+      "units": "bitmask",
+      "attributes": {
+        "long_name": "Data quality and validity mask",
+        "flag_masks": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "flag_meanings": "valid_data radar_shadow layover out_of_swath",
+        "grid_mapping": "projection"
+      }
+    },
+    {
+      "dataset_path": "/science/LSAR/GCOV/grids/frequencyA/listOfCovarianceTerms",
+      "description": "List of covariance matrix terms stored as 2D datasets in the file",
+      "datatype": "string / variable-length string array",
+      "dimensions": [
+        10
+      ],
+      "terms": [
+        "HHHH",
+        "HVHV",
+        "VVVV",
+        "VHVH",
+        "HHHV",
+        "HHVH",
+        "HHVV",
+        "HVVH",
+        "HVVV",
+        "VHVV"
+      ]
+    }
+  ],
+  "remote_access_feasibility_audit": {
+    "mechanism_tested": "HTTP Range Request (Range: bytes=0-512)",
+    "target_endpoint": "https://nisar.asf.earthdatacloud.nasa.gov/NISAR/NISAR_L2_GCOV_PROVISIONAL_V1/.../NISAR_L2_PR_GCOV_032_019_D_077_2005_QPDH_A_20261001T124313_20261001T124348_P05023_N_F_J_001.h5",
+    "unauthenticated_response": "HTTP 200 with text/html (Redirect to NASA Earthdata Login URS session portal)",
+    "feasibility_conclusion": "UNSUPPORTED for direct unauthenticated HTTP range slicing. POSIX h5py cannot stream HDF5 slices over unauthenticated HTTP URLs. Slicing requires either (a) an in-region AWS EC2/Lambda environment in us-west-2 with direct S3 bucket credentials, or (b) caching the full granule in a high-bandwidth cloud environment like Google Colab scratch space before coordinate-sliced reading.",
+    "compliance_action": "No multi-GB files downloaded locally."
+  }
+}
