@@ -192,10 +192,10 @@
   },
   "remote_access_feasibility_verdict": {
     "aws_s3_direct_access": "BLOCKED [MEASURED]. Callers outside AWS us-west-2 receive Access Denied. Colab runs in GCP; local machine runs in India.",
-    "https_remote_slicing": "UNSUPPORTED [MEASURED]. Remote B-tree traversal over HTTPS CloudFront is unviable across public internet.",
-    "full_scene_caching_required": true,
-    "expected_download_size_gb": "4.5 to 7.0 GB [ESTIMATE]",
+    "authenticated_https_remote_slicing": "UNVERIFIED [AWAITING COLAB EXECUTION]. Unauthenticated tests returned 302/401 Earthdata redirects; authenticated Range requests and fsspec block-cache reading are implemented in Notebook 03 and await live execution in Google Colab.",
+    "full_scene_caching_status": "CONTINGENCY [UNCONFIRMED]. Full-scene caching in cloud scratch storage remains an operational alternative if authenticated remote slicing proves infeasible or too slow during the Colab run.",
+    "full_scene_size_estimate_gb": "4.5 to 7.0 GB [ESTIMATE based on JPL D-102274 Quad-Pol compressed sizing; unmeasured on disk]",
     "available_scratch_space_colab_gb": "~75 to 100 GB [ESTIMATE]",
-    "compliance_status": "STOPPED BEFORE DOWNLOAD. Awaiting explicit user approval before downloading the 4.5-7.0 GB full scene in Google Colab."
+    "compliance_status": "LOCKED BEFORE DOWNLOAD. Full-scene downloading is not authorized. Awaiting authenticated remote slicing results from Google Colab."
   }
 }

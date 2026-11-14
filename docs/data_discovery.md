@@ -153,7 +153,8 @@ To avoid invalid physical assumptions, the analytical pipeline separates within-
 ┌────────────────────────────────────────────────────────┐   ┌────────────────────────────────────────────────────────┐
 │             WITHIN-FREQUENCY TRACKING (L-BAND)         │   │             WITHIN-FREQUENCY TRACKING (S-BAND)         │
 │  • Track 019 vs Track 019 (Descending Quad-Pol)        │   │  • S-band Track 019 vs S-band Track 019 (Dual-Pol)     │
-│  • Identical 24 cm wavelength, same look geometry      │   │  • Identical 9.3 cm wavelength, same look geometry     │
+│  • Same 24 cm wavelength, consistent relative orbit    │   │  • Same 9.3 cm wavelength, consistent relative orbit   │
+│    geometry (measurable scene-specific variations)     │   │    geometry (pending archive verification)             │
 │  • Direct 12-day backscatter log-ratio (dB difference) │   │  • Upper-canopy foliage & roughness temporal shifts    │
 └───────────────────────────┬────────────────────────────┘   └───────────────────────────┬────────────────────────────┘
                             │                                                            │
@@ -189,7 +190,7 @@ Never assume that an "$HH$" channel in L-band produces numerical backscatter com
 | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
 | **L-band** (1.25 GHz) | NASA ASF DAAC | Track 019 (Frame 077) | Descending Quad-Pol ($HH/HV/VH/VV$) | 4 passes (Aug 26, Sep 07, Sep 19, Oct 01) | **VERIFIED** | NASA ASF DAAC API query response (`api.daac.asf.alaska.edu`) |
 | **L-band** (1.25 GHz) | NASA ASF DAAC | Track 170 (Frame 013) | Ascending Dual-Pol ($HH/HV$) | 4 passes (Aug 24, Sep 05, Sep 17, Sep 29) | **VERIFIED** | NASA ASF DAAC API query response (`api.daac.asf.alaska.edu`) |
-| **S-band** (3.20 GHz) | ISRO Bhoonidhi | Track 019 & Track 170 | Dual-Pol / Compact-Pol | 8 scheduled passes (Cycles 28–32) | **PARTIALLY VERIFIED** | ISRO NRSC NISAR Cycle 25 Release Announcement; STAC API (`bhoonidhi-api.nrsc.gov.in/data/search`) returned HTTP 401 |
+| **S-band** (3.20 GHz) | ISRO Bhoonidhi | Track 019 & Track 170 | Dual-Pol / Compact-Pol | 8 scheduled passes (Cycles 28–32) | **PLANNED / UNVERIFIED IN ARCHIVE** | ISRO NRSC NISAR Cycle 25 Release Announcement; STAC API (`bhoonidhi-api.nrsc.gov.in/data/search`) returned HTTP 401 |
 
 #### 8.2 Unresolved Issues Before Phase 3
 1. **Authenticated Access for Bhoonidhi STAC API**:
@@ -199,6 +200,6 @@ Never assume that an "$HH$" channel in L-band produces numerical backscatter com
    - Real tide gauge readings (Canning Station) and rainfall metrics (IMD Canning AWS) must be collected for the 8 overpass timestamps before classifying radar change maps.
 
 #### 8.3 Recommended Execution Strategy for Phase 3
-1. **Primary Time Series**: Focus HDF5 dynamic reader development on the **Track 019 Descending Quad-Pol series** (Aug 26, Sep 07, Sep 19, Oct 01, 2026). This series provides identical look geometry ($42^\circ - 44^\circ$ looking East/South-East) and full 10-term covariance matrices without cross-track distortion.
+1. **Primary Time Series**: Focus HDF5 dynamic reader development on the **Track 019 Descending Quad-Pol series** (Aug 26, Sep 07, Sep 19, Oct 01, 2026). This series provides consistent repeat-pass relative track geometry (~$42^\circ - 44^\circ$ looking East/South-East, with documented scene-to-scene footprint and incidence-angle differences detailed in Phase 3A) and full 10-term covariance matrices without cross-track distortion.
 2. **Cross-Check Series**: Use the **Track 170 Ascending Dual-Pol series** as an independent geometric verification.
 3. **Subsetting without Full Granule Downloads**: Implement spatial coordinate array slicing directly on the HDF5 grid structure targeting the Gosaba bounding box ($[88.70^\circ, 21.80^\circ]$ to $[89.00^\circ, 22.10^\circ]$).

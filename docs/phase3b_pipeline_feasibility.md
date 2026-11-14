@@ -13,8 +13,8 @@ Phase 3B investigates the controlled single-product feasibility of the NISAR Lev
 
 #### Key Phase 3B Findings:
 1. **AWS S3 Direct Access Restriction**: Direct S3 access (`s3://sds-n-cumulus-prod-nisar-products/`) via temporary STS credentials (`https://nisar.asf.earthdatacloud.nasa.gov/s3credentials`) is **strictly enforced by AWS bucket policy to callers originating within the AWS `us-west-2` (Oregon) region**. Google Colab executes in Google Cloud Platform (GCP) data centers, and our local workspace executes in India; both receive `Access Denied` on direct S3 calls.
-2. **Selective Remote HTTP Slicing Limitation**: Direct HTTP Range request slicing over the HTTPS CloudFront endpoint without downloading the file is **unsupported**. Non-contiguous HDF5 B-tree chunk traversals over public networks trigger severe latency bottlenecks (~60–150 ms per chunk) and connection timeouts.
-3. **Full-Scene Caching Requirement**: Slicing the Gosaba geographic subset requires **caching the full 4.5–7.0 GB HDF5 granule** in cloud scratch storage (Google Colab). In accordance with the stop condition, execution has stopped to report the expected download size, available storage, and required approval before doing it.
+2. **Selective Remote HTTP Slicing Status**: Direct authenticated HTTP Range request slicing over the HTTPS CloudFront endpoint via `fsspec` block caching has been fully implemented and instrumented in Notebook 03, but is **UNVERIFIED (Awaiting Google Colab execution)**. Unauthenticated probes confirmed that anonymous requests are intercepted by Earthdata Login (HTTP 302/401); live authenticated partial-content streaming and cache reuse remain to be verified.
+3. **Full-Scene Caching as Operational Contingency**: Slicing the Gosaba geographic subset via full-granule download (~4.5–7.0 GB) in cloud scratch storage (Google Colab) remains an **operational contingency** if authenticated remote slicing proves infeasible or unacceptably slow. In accordance with the stop condition, full downloads remain strictly locked pending the Colab test results.
 4. **Spatial Resolution Correction**: L-band native posting is **10 m** or **20 m**, whereas S-band GCOV posting is generally **80 m**. The initial common comparison grid is established at **80 m**, while **20 m** is retained for detailed within-frequency L-band structural analysis. Resampling S-band to 20 m does not create additional spatial information.
 5. **Quad-Pol Memory Footprint Recalculation**: For 10 unique covariance terms (4 real `float32` diagonal terms at 4 bytes/px + 6 `complex64` off-diagonal terms at 8 bytes/px), the true raw pixel depth is **64 bytes per pixel** (NOT 40 bytes/pixel). At 20 m posting, the raw 10-band stack requires **$166.75\text{ MB}$**, scaling to **$\sim 500\text{ MB}$** working RAM with processing buffers.
 
@@ -91,16 +91,15 @@ Inspected against official NASA/ASF documentation: [ASF NISAR AWS S3 Access Guid
 #### 4.2 HTTPS CloudFront Endpoint & HTTP Range Requests
 - **Endpoint**: `https://nisar.asf.earthdatacloud.nasa.gov/NISAR/...`
 - **Authentication**: Requires NASA Earthdata Login credentials (via `.netrc` or Bearer Token). Unauthenticated requests redirect to `https://urs.earthdata.nasa.gov` (`text/html`).
-- **Feasibility of Remote HDF5 Chunk Slicing**:
-  - An HDF5 file is a complex binary structure with non-contiguous chunk storage. Slicing a spatial bounding box without downloading the entire file requires reading metadata B-trees, chunk allocation tables, and dataset headers scattered across the file.
+- **Feasibility Evaluation of Remote HDF5 Chunk Slicing**:
+  - An HDF5 file is a binary structure with non-contiguous chunk storage. Slicing a spatial bounding box without downloading the entire file requires reading metadata B-trees, chunk allocation tables, and dataset headers scattered across the file.
   - Over HTTPS CloudFront, each seek generates a separate HTTP Range request.
-  - With round-trip network latency ($\sim 60 - 150\text{ ms}$ per request), traversing an HDF5 hierarchy over public HTTPS requires **hundreds of sequential requests**, resulting in extreme latency, socket timeouts, and CloudFront throttling.
-  - *Conclusion*: **Selective remote chunk reading over public HTTPS cannot avoid downloading the file in practice.**
+  - To evaluate whether round-trip network latency can be mitigated, an 8 MB `BlockCache` with `h5py` page buffering has been integrated into Notebook 03 and `scripts/test_authenticated_access.py` using `earthaccess.get_fsspec_https_session()`.
+  - *Evaluation Status*: **Pending experimental validation in Google Colab.** Unauthenticated attempts confirmed that login is required; the actual feasibility, cache hit rates, and throughput of authenticated Range reading will be established by the live Colab run.
 
 #### 4.3 Staging Strategy & Compliance
-- **Full-Scene Caching is Necessary**: To extract the Gosaba subset, the full HDF5 granule must be downloaded to ephemeral scratch storage.
-- **Target Staging Environment**: **Google Colab Cloud Scratch (`/content/nisar_staging/`)**. Google Cloud data centers have gigabit peering to NASA Earthdata Cloud, allowing full-scene downloads in 30–60 seconds, where local memory slicing extracts the compact GeoTIFF.
-- **Local Workspace Compliance**: In accordance with project rules, **no multi-GB file will be downloaded to this local Windows repository**.
+- **Full-Scene Caching as a Contingency**: If authenticated remote slicing proves throttled or unviable during Colab testing, full-scene caching in Google Colab ephemeral scratch storage (`/content/nisar_staging/`) is the planned operational alternative.
+- **Local Workspace Compliance**: In accordance with project rules, **no multi-GB file will be downloaded to this local Windows repository**. Full-scene downloads remain locked until selective access is tested.
 
 ---
 
@@ -214,18 +213,18 @@ The test harness [scripts/test_authenticated_access.py](file:///c:/Users/vamsi/D
 
 | Question / Requirement | Scientific Finding & Status |
 | :--- | :--- |
-| **1. Whether authenticated access succeeded?** | **Verified protocol.** Endpoint connectivity and authentication requirements are confirmed. Earthdata credentials / `.netrc` are required for file download. |
-| **2. Whether selective remote reading worked?** | **UNSUPPORTED.** S3 direct access is blocked outside AWS `us-west-2` (Colab runs in GCP). Remote HTTP Range request slicing over CloudFront is throttled and unviable over public networks. |
-| **3. Whether a full download was required?** | **YES.** Full-scene caching in cloud scratch storage (~4.5–7.0 GB) is strictly required to extract the spatial subset. |
-| **4. Expected download size & storage needed?** | **4.5 to 7.0 GB** per full granule download. Google Colab ephemeral scratch storage (`/content/`) provides **~75–100 GB**, which is ample for caching one scene at a time. |
+| **1. Whether authenticated access succeeded?** | **AWAITING COLAB RUN.** Interactive and multi-strategy authentication is implemented via `earthaccess`. Live execution in Google Colab is pending. |
+| **2. Whether selective remote reading worked?** | **UNVERIFIED [AWAITING COLAB EXECUTION].** Direct S3 access is blocked outside AWS `us-west-2`. Authenticated HTTPS Range slicing via `fsspec` 8 MB blockcache is implemented in Notebook 03 and ready for live verification. |
+| **3. Whether a full download was required?** | **UNCONFIRMED (OPERATIONAL CONTINGENCY).** Full-scene caching (~4.5–7.0 GB in Colab scratch) is prepared as a fallback if remote slicing fails or is too slow. Full-scene downloading is currently locked. |
+| **4. Expected download size & storage needed?** | **4.5 to 7.0 GB** [ESTIMATE based on JPL D-102274 Quad-Pol compressed sizing; unmeasured on disk]. Google Colab ephemeral scratch storage (`/content/`) provides **~75–100 GB**. |
 | **5. Raster validation results?** | Mathematical bounds, affine matrix formulas, pixel-centre adjustments, and 64-byte/pixel memory models have been numerically verified in [data/processed/pipeline_validation.json](file:///c:/Users/vamsi/Downloads/New%20folder/data/processed/pipeline_validation.json). |
-| **6. Remaining blockers?** | **Awaiting user approval** to download the October 1 candidate granule (4.5–7.0 GB) in Google Colab to generate the representative Gosaba subset GeoTIFF. |
+| **6. Remaining blockers?** | **Execution of Steps 1–4 in Google Colab** ([notebooks/03_gcov_subset_pipeline.ipynb](file:///c:/Users/vamsi/Downloads/New%20folder/notebooks/03_gcov_subset_pipeline.ipynb)) to test authenticated Range access, block caching, and 100x100 preview extraction. |
 
 ---
 
 ### Stop Condition Satisfied
 
-Execution has paused as instructed. No multi-GB files were downloaded locally, and no change detection has been started.
+Execution has paused as instructed. No multi-GB files were downloaded locally, no full-scene downloads were initiated, and no change detection has been started.
 
 **Action Required**:
-Please review these findings and provide explicit approval to stage the 4.5–7.0 GB October 1 granule in Google Colab to execute the single-product GeoTIFF extraction and visual preview.
+Execute Steps 1–4 in [notebooks/03_gcov_subset_pipeline.ipynb](file:///c:/Users/vamsi/Downloads/New%20folder/notebooks/03_gcov_subset_pipeline.ipynb) in Google Colab to verify authenticated HTTP Range access, fsspec block caching, and preview the 100x100 radar window before deciding on full-scene caching.
