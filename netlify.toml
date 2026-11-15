@@ -1,0 +1,15 @@
+[build]
+  # The Vite app lives in the web/ sub-folder, not the repo root.
+  base = "web"
+  # Install deps (incl. devDependencies such as Vite) before building.
+  command = "npm install --include=dev && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA fallback so client-side paths resolve to the app instead of a 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
