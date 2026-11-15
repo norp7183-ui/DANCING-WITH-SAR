@@ -104,3 +104,11 @@ scratch/
 tmp/
 temp/
 scripts/inspect_remote.py
+
+# Frontend Dependencies & Production Builds (Never commit node_modules or dist)
+node_modules/
+web/node_modules/
+web/dist/
+.vite/
+web/.vite/
+

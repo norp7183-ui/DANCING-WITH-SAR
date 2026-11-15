@@ -1,0 +1,119 @@
+{
+  "project": "DANCING WITH THE SARs",
+  "subtitle": "Evidence-First Multi-Temporal SAR Interpretation for the Sundarbans Delta",
+  "study_area": {
+    "name": "Gosaba Community Development Block",
+    "location": "Sundarbans Delta, West Bengal, India",
+    "geographic_bounds": {
+      "min_lon": 88.7,
+      "max_lon": 89.0,
+      "min_lat": 21.8,
+      "max_lat": 22.1
+    },
+    "projected_bounds_epsg_32645": {
+      "crs": "EPSG:32645",
+      "utm_zone": "45N",
+      "left": 675380.0,
+      "right": 706760.0,
+      "bottom": 2411660.0,
+      "top": 2445260.0,
+      "pixel_spacing_m": 20.0,
+      "dimensions": {
+        "rows": 1680,
+        "cols": 1569
+      },
+      "total_pixels": 2635920
+    }
+  },
+  "sensor_configuration": {
+    "mission": "NASA-ISRO SAR (NISAR)",
+    "frequency": "Frequency A (L-band, 1.25 GHz / ~24 cm wavelength)",
+    "mode": "2005 (Quad-Pol Primary, Dual-Pol Sideband)",
+    "orbit": "Track 019 Descending, Frame 077",
+    "product_type": "L2 Geocoded Covariance (GCOV)",
+    "radiometric_quantity": "Gamma Nought (\u03b3\u2070)",
+    "mean_looks": 9.88
+  },
+  "datasets": [
+    {
+      "id": "cycle_32_reference",
+      "cycle": 32,
+      "date": "2026-10-01",
+      "time_utc": "12:43:18",
+      "time_ist": "18:13:18",
+      "polarizations": [
+        "HHHH",
+        "HVHV"
+      ],
+      "spatial_resolution": "20m x 20m",
+      "crs": "EPSG:32645",
+      "dimensions": [
+        1680,
+        1569
+      ],
+      "units": "Linear power / decibels (dB)",
+      "validation_status": "VERIFIED",
+      "allowed_in_frontend": true,
+      "description": "Verified reference baseline GeoTIFF and HDF5 metadata inspection (Phase 4B)."
+    },
+    {
+      "id": "four_cycle_inventory",
+      "cycles": [
+        29,
+        30,
+        31,
+        32
+      ],
+      "dates": [
+        "2026-08-26",
+        "2026-09-07",
+        "2026-09-19",
+        "2026-10-01"
+      ],
+      "orbit": "Track 019 Descending, Frame 077",
+      "validation_status": "VERIFIED",
+      "allowed_in_frontend": true,
+      "description": "Four-acquisition descending orbit sequence with verified common grid geometry."
+    },
+    {
+      "id": "cycle_29_vs_30_difference",
+      "cycles": [
+        29,
+        30
+      ],
+      "dates": [
+        "2026-08-26",
+        "2026-09-07"
+      ],
+      "polarizations": [
+        "HHHH",
+        "HVHV",
+        "HV/HH"
+      ],
+      "validation_status": "PROVISIONAL",
+      "allowed_in_frontend": true,
+      "frontend_display_mode": "PROVISIONAL_WITH_BADGE",
+      "known_limitations": "Extracted via remote range-based slices. Numerical statistics pending multi-gauge calibration. Not attributable to permanent mangrove loss.",
+      "description": "12-day multi-temporal differential backscatter shift maps (\u0394\u03b3\u2070)."
+    },
+    {
+      "id": "extreme_pixel_outliers",
+      "cycles": [
+        29,
+        30
+      ],
+      "validation_status": "PROVISIONAL_HYPOTHESIS",
+      "allowed_in_frontend": true,
+      "frontend_display_mode": "PROVISIONAL_WITH_BADGE",
+      "known_limitations": "Discrete localized outliers (e.g. \u0394 > +30 dB or \u0394 < -25 dB). Hypothesized as transient watercraft, river sandbars, or specular water inundation.",
+      "description": "80 extreme pixel records audited for spatial clustering and context."
+    },
+    {
+      "id": "mangrove_loss_classification",
+      "validation_status": "UNVERIFIED_PENDING_GROUND_TRUTH",
+      "allowed_in_frontend": false,
+      "known_limitations": "Direct inference of mangrove degradation from short-term (12-day) SAR backscatter changes is scientifically invalid due to tidal/moisture confounding.",
+      "description": "Vegetation health classification blocked until long-term multi-cycle and in-situ data is integrated."
+    }
+  ]
+}

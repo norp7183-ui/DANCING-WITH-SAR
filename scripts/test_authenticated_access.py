@@ -259,12 +259,23 @@ def test_remote_fsspec_h5py_slicing(fs, data_url):
             io_metrics["fsspec_cache_type"] = cache_name
             io_metrics["fsspec_cache_verified"] = bool(cache_obj is not None)
             
-            initial_cache_info = None
-            if cache_obj and hasattr(cache_obj, "cache_info"):
-                initial_cache_info = cache_obj.cache_info()
+            # Instrument fetcher using mutable dict counter to track true network HTTP chunk requests
+            request_counter = {"count": 0}
+            if cache_obj and hasattr(cache_obj, "fetcher"):
+                orig_fetcher = cache_obj.fetcher
+                def instrumented_fetcher(start, end):
+                    request_counter["count"] += 1
+                    return orig_fetcher(start, end)
+                cache_obj.fetcher = instrumented_fetcher
+                
+            # Snapshot before initial read
+            initial_cache_info = cache_obj.cache_info() if (cache_obj and hasattr(cache_obj, "cache_info")) else None
+            fetch_before_read = request_counter["count"]
+            if cache_obj:
                 io_metrics["block_size_bytes"] = getattr(cache_obj, "blocksize", 8 * 1024 * 1024)
             
-            with h5py.File(f_obj, "r", page_buf_size=16 * 1024 * 1024, rdcc_nbytes=4 * 1024 * 1024) as h5:
+            # Disable h5py raw data chunk cache (rdcc_nbytes=0) to explicitly isolate fsspec BlockCache
+            with h5py.File(f_obj, "r", page_buf_size=16 * 1024 * 1024, rdcc_nbytes=0) as h5:
                 # 1. Read metadata
                 grid_group = h5["/science/LSAR/GCOV/grids/frequencyA"]
                 datasets = list(grid_group.keys())
@@ -320,23 +331,45 @@ def test_remote_fsspec_h5py_slicing(fs, data_url):
                     logger.info(
                         f"Read mask window: valid={valid_pixels}, invalid_0={invalid_mask0}, nodata_255={nodata_mask255}"
                     )
+                
+                # Snapshot after initial read
+                cinfo_after_first = cache_obj.cache_info() if (cache_obj and hasattr(cache_obj, "cache_info")) else None
+                fetch_after_first = request_counter["count"]
+                
+                # 5. Repeated read on the same HDF5 dataset and exact same region
+                _ = diag_ds[:WINDOW_ROWS, :WINDOW_COLS]
+                
+                # Snapshot after repeat read
+                cinfo_after_repeat = cache_obj.cache_info() if (cache_obj and hasattr(cache_obj, "cache_info")) else None
+                fetch_after_repeat = request_counter["count"]
             
             # Post-read cache validation to prove cache was actively used
-            if cache_obj and hasattr(cache_obj, "cache_info"):
-                final_cache_info = cache_obj.cache_info()
-                io_metrics["cache_stats"] = {
-                    "hits": final_cache_info.hits,
-                    "misses": final_cache_info.misses,
-                    "currsize_blocks": final_cache_info.currsize,
-                    "maxsize_blocks": final_cache_info.maxsize,
-                    "block_size_mb": round(getattr(cache_obj, "blocksize", 8 * 1024 * 1024) / (1024 * 1024), 2),
-                    "cache_functioning": bool(final_cache_info.hits > 0 or final_cache_info.currsize > 0)
-                }
-                logger.info(
-                    f"Cache Performance Verified: hits={final_cache_info.hits}, "
-                    f"misses={final_cache_info.misses}, currsize={final_cache_info.currsize} blocks, "
-                    f"functioning={io_metrics['cache_stats']['cache_functioning']}"
-                )
+            repeat_delta_fetch = fetch_after_repeat - fetch_after_first
+            block_size_mb = round(getattr(cache_obj, "blocksize", 8 * 1024 * 1024) / (1024 * 1024), 2)
+            io_metrics["cache_stats"] = {
+                "h5py_rdcc_nbytes": 0,
+                "initial_read_fetcher_invocations": fetch_after_first,
+                "repeat_read_fetcher_invocations": repeat_delta_fetch,
+                "zero_additional_fetcher_calls": bool(repeat_delta_fetch == 0),
+                "block_size_mb": block_size_mb
+            }
+            
+            if cinfo_after_repeat:
+                io_metrics["cache_stats"].update({
+                    "native_hits": cinfo_after_repeat.hits,
+                    "native_misses": cinfo_after_repeat.misses,
+                    "currsize_blocks": cinfo_after_repeat.currsize,
+                    "maxsize_blocks": cinfo_after_repeat.maxsize,
+                    "estimated_cache_capacity_mb": round(cinfo_after_repeat.currsize * block_size_mb, 2),
+                    "cache_functioning": bool(cinfo_after_repeat.currsize > 0)
+                })
+                
+            logger.info(
+                f"Cache Performance Verified: initial_fetcher_calls={fetch_after_first}, "
+                f"repeat_new_fetcher_calls={repeat_delta_fetch}, "
+                f"zero_additional_calls={io_metrics['cache_stats']['zero_additional_fetcher_calls']}, "
+                f"currsize_blocks={cinfo_after_repeat.currsize if cinfo_after_repeat else 'N/A'}"
+            )
                     
         io_metrics["elapsed_seconds"] = round(time.perf_counter() - t0, 3)
     except Exception as e:
